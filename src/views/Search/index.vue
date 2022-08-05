@@ -11,6 +11,7 @@
         placeholder="请输入搜索关键词"
         @search="onSearch"
         @focus="onSearchFocus"
+        @cancel="$router.back()"
       />
     </form>
     <!-- 搜索历史/建议/结果 -->
