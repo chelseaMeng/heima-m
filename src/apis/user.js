@@ -38,3 +38,26 @@ export const getUserInfo = () => {
     // }
   })
 }
+// 上传头像的请求
+// 如果传的是对象,axios默认将对象转成json并且加上content-type=application/json
+// 如果传的是formdata表单,那么axios会将表单提交给后端,并且默认加上content-type=multipart/formdata
+// 如果后端要的是FormData表单
+// const fm = new FormData()
+// fm.append(表单的名称或者文档中的body中的photo字段(参数名称),表单项)
+
+/**
+ *
+ * @param {*} file  图片的file对象
+ * @returns Promise
+ */
+export const uploadAvatar = (file) => {
+  // 创建一个表单数据类型 new FormData()
+  const fm = new FormData()
+  // photo 文档中的photo字段(参数名称) ,file是表单项,是用户传的
+  fm.append('photo', file)
+  return request({
+    url: '/v1_0/user/photo',
+    method: 'PATCH',
+    data: fm
+  })
+}
