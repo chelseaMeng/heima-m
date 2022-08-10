@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+
 // import store from '@/store'
 /**
  * 登录
@@ -59,5 +60,23 @@ export const uploadAvatar = (file) => {
     url: '/v1_0/user/photo',
     method: 'PATCH',
     data: fm
+  })
+}
+
+// 获取用户个人资料
+export const getUserProfile = () => {
+  return request({
+    url: '/v1_0/user/profile',
+    method: 'GET'
+  })
+}
+// 修改用户信息
+export const editUserProfile = (data) => {
+  return request({
+    url: '/v1_0/user/profile',
+    method: 'PATCH',
+    // 该请求方式需要Authorization,在request中已经封装了请求拦截器,里面会自动携带Authorization
+    // 这里不用写
+    data
   })
 }

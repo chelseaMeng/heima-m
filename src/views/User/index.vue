@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <!-- 标题 -->
     <van-nav-bar
       class="navbar"
@@ -23,7 +23,6 @@
       />
       <!--上传图片时展示弹层,暨input:file触发change事件时展示弹层 -->
     </van-cell>
-
     <!-- 头像弹层 -->
     <van-popup
       class="avatar-popup"
@@ -38,12 +37,83 @@
         v-if="isShowAvatar"
       ></UpdateAvatar>
     </van-popup>
+
+    <!-- 昵称 -->
+    <van-cell
+      title="昵称"
+      is-link
+      :value="nickname"
+      @click="isShowNickname = true"
+    >
+    </van-cell>
+    <!-- 昵称弹出层 -->
+    <van-popup
+      v-model="isShowNickname"
+      position="bottom"
+      :style="{ height: '100%', width: '100%' }"
+    >
+      <!-- 更新昵称组件挂载点 -->
+      <UpdateNickname
+        v-if="isShowNickname"
+        @close="isShowNickname = false"
+        v-model="nickname"
+      ></UpdateNickname>
+      <!-- v-model="nickname"  nickname在父组件中既要传递给子组件,子组件的数据改动之后也要传递给父组件 所以用v-model-->
+    </van-popup>
+
+    <!-- 性别 -->
+    <van-cell
+      title="性别"
+      is-link
+      :value="gender == 0 ? '男' : '女'"
+      @click="isShowGender = true"
+    >
+    </van-cell>
+
+    <!--  性别弹层-->
+    <!-- 弹出层中的v-model意思是是否显示弹出层 -->
+    <van-popup
+      v-model="isShowGender"
+      position="bottom"
+      :style="{ height: '40%', width: '100%' }"
+    >
+      <!-- 更新性别组件挂载点 -->
+      <UpdateGender
+        v-if="isShowGender"
+        v-model="gender"
+        @close="isShowGender = false"
+      ></UpdateGender>
+      <!-- v-model="gender"  gender在父组件中既要传递给子组件,子组件的数据改动之后也要传递给父组件 所以用v-model 子组件用input事件触发-->
+    </van-popup>
+
+    <!-- 生日 -->
+    <van-cell
+      title="生日"
+      is-link
+      :value="birthday"
+      @click="isShowBirthday = true"
+    />
+    <!-- 生日弹出层 -->
+    <van-popup
+      v-model="isShowBirthday"
+      position="bottom"
+      :style="{ height: '40%' }"
+    >
+      <!-- 更新生日挂载点 -->
+      <UpdateBirthday
+        v-model="birthday"
+        @close="isShowBirthday = false"
+      ></UpdateBirthday>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { getUserInfo } from '@/apis'
+import { getUserInfo, getUserProfile } from '@/apis'
 import UpdateAvatar from './components/UpdateAvatar'
+import UpdateNickname from './components/UpdateNickname'
+import UpdateGender from './components/UpdateGender'
+import UpdateBirthday from './components/UpdateBirthday'
 import { resolveToBase64 } from '@/utils/index'
 
 export default {
@@ -52,11 +122,18 @@ export default {
     return {
       userInfo: {},
       isShowAvatar: false,
-      photo: ''
+      isShowNickname: false,
+      isShowGender: false,
+      isShowBirthday: false,
+      photo: '',
+      nickname: '',
+      gender: '',
+      birthday: ''
     }
   },
   created () {
     this.getUserInfo()
+    this.getUserProfile()
   },
   methods: {
     async getUserInfo () {
@@ -85,10 +162,25 @@ export default {
       this.photo = url
       // e.target.value = ''
       this.isShowAvatar = true
+    },
+    // 获取用户个人信息
+    async getUserProfile () {
+      const { data } = await getUserProfile()
+      // console.log(data)
+      this.nickname = data.data.name
+      this.gender = data.data.gender
+      this.birthday = data.data.birthday
     }
+    // saveNickname (msg) {
+    //   this.nickname = msg
+    //   this.isShowNickname = false
+    // }
   },
   components: {
-    UpdateAvatar
+    UpdateAvatar,
+    UpdateNickname,
+    UpdateGender,
+    UpdateBirthday
   }
 }
 </script>
@@ -105,5 +197,8 @@ export default {
 }
 .avatar-popup {
   background-color: #000;
+}
+.van-popup {
+  background-color: #f5f7f9;
 }
 </style>
